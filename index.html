@@ -4,10 +4,92 @@
     <meta charset="utf-8" />
     <meta type="description" content="">
     <title>SecuritiesHub</title>
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <script src="main.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" integrity="sha384-3AB7yXWz4OeoZcPbieVW64vVXEwADiYyAEhwilzWsLw+9FgqpyjjStpPnpBO8o8S" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="main.css" />
+    <script src="index.js"></script>
 </head>
 <body>
-    
+<div id="container">
+    <nav role="navigation">
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+    </nav>
+
+    <header role="banner">
+        <h1>SecuritiesHub</h1>
+        <button class="btn" id="getStartedBtn">Get Started</button>
+    </header>
+
+    <section id="startBtnDestination"></section>
+
+    <main>
+        <div id="criteriaBtns">
+            <button class="btn" id="stocksViewBtn"><i class="fa fa-chart-line"></i> Stocks</button>
+            <button class="btn" id="cryptoViewBtn"><i class="fa fa-bitcoin"></i> Crypto</button>
+            <button class="btn" id="forexViewBtn"><i class="fa fa-globe"></i> ForEx</button>
+        </div>
+        <section id="highlights">
+            <section id="topPerforming">
+                <h3>Top Performing Stocks</h3>
+                <div class="stockItem topPerfStock">
+                    <p class="companyName">Apple Inc.</p>
+                    <div class="stockInfo">
+                        <p class="stockTicker">AAPL</p>
+                        <p class="dollarChange">$20.12</p>
+                        <p class="percentChange">%2.32</p>
+                    </div>
+                </div>
+                <div class="stockItem">
+                    <p class="companyName">Alphabet Inc. Class C</p>
+                    <div class="stockInfo">
+                        <p class="stockTicker">GOOG</p>
+                        <p class="dollarChange">$20.12</p>
+                        <p class="percentChange">%2.32</p>
+                    </div>
+                </div>
+                <div class="stockItem">
+                    <p class="companyName">Micron Technology, Inc.</p>
+                    <div class="stockInfo">
+                        <p class="stockTicker">MU</p>
+                        <p class="dollarChange">$20.12</p>
+                        <p class="percentChange">%2.32</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="bottomPerforming">
+                <h3>Bottom Performing Stocks</h3>
+                <div class="stockItem botPerfStock">
+                    <p class="companyName">Blackberry Ltd</p>
+                    <div class="stockInfo">
+                        <p class="stockTicker">BB</p>
+                        <p class="dollarChange">$20.12</p>
+                        <p class="percentChange">%2.32</p>
+                    </div>
+                </div>
+                <div class="stockItem botPerfStock">
+                    <p class="companyName">IBM Common Stock</p>
+                    <div class="stockInfo">
+                        <p class="stockTicker">IBM</p>
+                        <p class="dollarChange">$20.12</p>
+                        <p class="percentChange">%2.32</p>
+                    </div>
+                </div>
+                <div class="stockItem botPerfStock">
+                    <p class="companyName">Verizon Communications Inc.</p>
+                    <div class="stockInfo">
+                        <p class="stockTicker">VZ</p>
+                        <p class="dollarChange">$20.12</p>
+                        <p class="percentChange">%2.32</p>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        
+    </main>
+</div>
 </body>
 </html>
