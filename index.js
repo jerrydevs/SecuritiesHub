@@ -1,15 +1,92 @@
 const iexEndpt = "https://api.iextrading.com/1.0";
 const iexMarket = "/stock/market/batch?symbols="
-const coinMktEndpt = "https://api.coinmarketcap.com/v1/ticker/";
+const coinMktEndpt = "https://api.coinmarketcap.com/v1/ticker/?limit=0";
 const iexMktLast = "https://api.iextrading.com/1.0/tops/last";
 const topPerfSection = document.getElementById("topPerforming");
 const bottomPerfSection = document.getElementById("bottomPerforming");
 
 const iexMaxBatch = 100;
 
-function getTickers(stockItems) {
+class symbolItem{
+  constructor(symbol, name){
+    this.symbol = symbol;
+    this.name = name;
+  }
+  getSymbol(){
+    return this.symbol;
+  }
+  getName(){
+    return this.name;
+  }
+}
+
+class secItem{
+  constructor(symbol, name, currentPrice, openPrice, delta){
+    this.symbol = symbol;
+    this.name = name;
+    this.currentPrice = currentPrice;
+    this.openPrice = openPrice;
+    this.delta = delta;
+  }
+  getSymbol(){
+    return this.symbol;
+  }
+  getName(){
+    return this.name;
+  }
+  getCurrentPrice(){
+    return this.currentPrice;
+  }
+  getOpenPrice(){
+    return this.openPrice;
+  }
+  getDelta(){
+    return this.delta;
+  }
+  getDeltaPerc(){
+    return 100*(this.currentPrice - this.openPrice)/this.openPrice;
+  }
+  setName(name){
+    this.name = name;
+  }
+}
+
+class cryptoItem{
+  constructor(symbol, name, price, marketCap, deltaPerc1H, deltaPerc1D, deltaPerc7D){
+    this.symbol = symbol;
+    this.name = name;
+    this.price = price;
+    this.marketCap = marketCap;
+    this.deltaPerc1H = deltaPerc1H;
+    this.deltaPerc1D = deltaPerc1D;
+    this.deltaPerc7D = deltaPerc7D;
+  }
+  getSymbol(){
+    return this.symbol;
+  }
+  getName(){
+    return this.name;
+  }
+  getPrice(){
+    return this.price;
+  }
+  getMarketCap(){
+    return this.marketCap;
+  }
+  getDeltaPerc1H(){
+    return this.deltaPerc1H;
+  }
+  getDeltaPerc1D(){
+    return this.deltaPerc1D;
+  }
+  getDeltaPerc7D(){
+    return this.deltaPerc7D;
+  }
+}
+
+function getSymbols(stockItems) {
   return stockItems.reduce((total, item) => {
-    total.push({"symbol": item.symbol, "name": item.name});
+    total.push(new symbolItem(item.symbol, item.name));
     return total;
   }, [])
 }
@@ -22,20 +99,33 @@ function clearHighlights() {
 function insertStockHTML(stockItem, location) {
   const html = `
   <div class="stockItem topPerfStock">
-      <p class="companyName" id="tester">${stockItem.name}</p>
+      <p class="companyName" id="tester">${stockItem.getName()}</p>
       <div class="stockInfo">
-          <p class="stockTicker">${stockItem.symbol}</p>
-          <p class="dollarChange">$${stockItem.delta.toFixed(2)}</p>
-          <p class="percentChange">${stockItem.deltaPerc.toFixed(2)}%</p>
+          <p class="stockSymbol">${stockItem.getSymbol()}</p>
+          <p class="dollarChange">$${stockItem.getDelta().toFixed(2)}</p>
+          <p class="percentChange">${stockItem.getDeltaPerc().toFixed(2)}%</p>
       </div>
   </div>`;
   location.insertAdjacentHTML("beforeend", html);
 }
 
-function makeStockRequestURL(tickers, index, iters) {
+function insertCryptoHTML(cryptoItem, location) {
+  const html = `
+  <div class="cryptoItem topPerfStock">
+      <p class="companyName" id="tester">${cryptoItem.getName()}</p>
+      <div class="stockInfo">
+          <p class="stockSymbol">${cryptoItem.getSymbol()}</p>
+          <p class="dollarChange">${cryptoItem.getDeltaPerc1H()}%</p>
+          <p class="percentChange">${cryptoItem.getDeltaPerc1D()}%</p>
+      </div>
+  </div>`;
+  location.insertAdjacentHTML("beforeend", html);
+}
+
+function makeStockRequestURL(symbols, index, iters) {
   let url = iexEndpt + iexMarket;
   for (let i = index; i < index + iters; i++) {
-    url += `${tickers[i].symbol},`;
+    url += `${symbols[i].getSymbol()},`;
   }
   url += "&types=quote";
   return url;
@@ -44,7 +134,7 @@ function makeStockRequestURL(tickers, index, iters) {
 function makeCurrentStockItems(stockData) {
   return stockData.reduce((total, item) => {
     if (item.price > 0) {
-      total.push({"symbol": item.symbol, "price": item.price});
+      total.push(new secItem(item.symbol, null, item.price, null, null));
     }
     return total;
   }, [])
@@ -56,22 +146,22 @@ function objToArray(obj) {
 
 function makeOpenStockItems(stockData) {
   return stockData.reduce((total, item) => {
-    total.push({"symbol": item.quote.symbol, "name": item.quote.companyName, "price": item.quote.open});
+    total.push(new secItem(item.quote.symbol, item.quote.companyName, null, item.quote.open, null));
     return total;
   }, [])
 }
 
-async function getOpenStockData(stockTickers, index, volume) {
-  let tempRequest = await fetch(makeStockRequestURL(stockTickers, index, volume));
+async function getOpenStockData(stockSymbols, index, volume) {
+  let tempRequest = await fetch(makeStockRequestURL(stockSymbols, index, volume));
   tempRequest = await tempRequest.json();
   tempRequest = await makeOpenStockItems(objToArray(tempRequest));
   return tempRequest;
 }
 
 function sortBySymbol(itemA, itemB) {
-  if (a.symbol < b.symbol) {
+  if (a.getSymbol() < b.getSymbol()) {
     return -1;
-  } else if (a.symbol > b.symbol) {
+  } else if (a.getSymbol() > b.getSymbol()) {
     return 1;
   }
 }
@@ -79,7 +169,7 @@ function sortBySymbol(itemA, itemB) {
 function isIn(stockItem, stockArray) {
   let isIn = -1;
   for (let i = 0; i < stockArray.length; i++) {
-    if (stockItem.symbol === stockArray[i].symbol) {
+    if (stockItem.getSymbol() === stockArray[i].getSymbol()) {
       isIn = i;
       break;
     }
@@ -92,68 +182,80 @@ function consolidateItems(currentItems, openItems) {
   for (let i = 0; i < currentItems.length; i++) {
     const itemIndex = isIn(currentItems[i], openItems);
     if (itemIndex != -1) {
-      consolidated.push({
-        "symbol": openItems[itemIndex].symbol,
-        "name": openItems[itemIndex].name,
-        "openPrice": openItems[itemIndex].price,
-        "currentPrice": currentItems[i].price,
-        "delta": currentItems[i].price - openItems[itemIndex].price,
-        "deltaPerc": 100*(currentItems[i].price - openItems[itemIndex].price)/openItems[itemIndex].price
-      })
+      consolidated.push(new secItem(
+        openItems[itemIndex].getSymbol(),
+        openItems[itemIndex].getName(),
+        currentItems[i].getCurrentPrice(),
+        openItems[itemIndex].getOpenPrice(),
+        currentItems[i].getCurrentPrice() - openItems[itemIndex].getOpenPrice()
+      ))
     }
   }
   return consolidated;
 }
 
+async function cryptoSummary() {
+  let data = await fetch(coinMktEndpt);
+  data = await data.json();
 
-async function getData() {
+  let [cryptoData] = await Promise.all([data]);
+
+  cryptoData = cryptoData.reduce((total, item) => {
+    if (item.market_cap_usd != null & item.available_supply != null & item["24h_volume_usd"] != null){
+      total.push(new cryptoItem(
+        item.symbol, 
+        item.name, 
+        item.price_usd,
+        item.market_cap_usd, 
+        item.percent_change_1h,
+        item.percent_change_24h,
+        item.percent_change_7d))
+    }
+    return total;
+  }, [])
+
+  cryptoData = cryptoData.sort((a, b) => {
+    return b.getDeltaPerc1H() - a.getDeltaPerc1H();
+  })
+
+  clearHighlights();
+  cryptoData.slice(0, 20).forEach((item) => insertCryptoHTML(item, topPerfSection));
+  cryptoData.slice(-20).reverse().forEach((item) => insertCryptoHTML(item, bottomPerfSection));
+  console.log(cryptoData);
+}
+
+async function stockSummary() {
   let currentPrices = await fetch(iexMktLast);
   currentPrices = await currentPrices.json();
 
   let [prices] = await Promise.all([currentPrices]);
   currentStockItems = makeCurrentStockItems(prices);  
 
-  const stockTickers = getTickers(currentStockItems);
+  const stockSymbols = getSymbols(currentStockItems);
 
   const fullIters = Math.floor(currentStockItems.length / iexMaxBatch);
   const remainderVol = currentStockItems.length % iexMaxBatch;
 
   let openStockItems = [];
   for (let i = 0; i < fullIters; i++) {
-    openStockItems = openStockItems.concat(await getOpenStockData(stockTickers, i*iexMaxBatch, iexMaxBatch));
+    openStockItems = openStockItems.concat(await getOpenStockData(stockSymbols, i*iexMaxBatch, iexMaxBatch));
   }
-  openStockItems = openStockItems.concat(await getOpenStockData(stockTickers, fullIters*iexMaxBatch, remainderVol));
-
-  currentStockItems.sort((a, b) => {
-    if (a.symbol < b.symbol) {
-      return -1;
-    } else if (a.symbol > b.symbol) {
-      return 1;
-    }
-  });
-
-  openStockItems.sort((a, b) => {
-    if (a.symbol < b.symbol) {
-      return -1;
-    } else if (a.symbol > b.symbol) {
-      return 1;
-    }
-  });
+  openStockItems = openStockItems.concat(await getOpenStockData(stockSymbols, fullIters*iexMaxBatch, remainderVol));
 
   let consolidatedItems = consolidateItems(currentStockItems, openStockItems);
 
   consolidatedItems = consolidatedItems.reduce((total, item) => {
-    if (item.name === "") {
-      item.name = "Company name unavailable";
+    if (item.getName() === "") {
+      item.setName("Company name unavailable");
     }
-    if (item.openPrice !== null) {
+    if (item.getOpenPrice() !== null) {
       total.push(item);
     }
     return total;
   }, [])
 
   let stocksAsc = consolidatedItems.sort((a, b) => {
-      if (a.deltaPerc < b.deltaPerc) {
+      if (a.getDeltaPerc() < b.getDeltaPerc()) {
         return -1;
       } else {
         return 1;
@@ -162,10 +264,11 @@ async function getData() {
 
   let stocksDesc = stocksAsc.reverse();
 
-  const topResults = stocksAsc.slice(0,15);
-  const bottomResults = stocksAsc.reverse().slice(0,15);
+  const topResults = stocksAsc.slice(0, 20);
+  const bottomResults = stocksAsc.slice(-20).reverse();
+
   console.log(stocksAsc.slice(0,100));
-  console.log(stocksAsc.reverse().slice(0,100));
+  console.log(stocksAsc.slice(-100).reverse());
 
   clearHighlights();
 
