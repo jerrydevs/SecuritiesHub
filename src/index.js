@@ -1,8 +1,17 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+import ReactDOM, { render } from 'react-dom';
+import { Provider } from 'mobx-react'
 
-ReactDOM.render(<App />, document.getElementById('root'));
-registerServiceWorker();
+import App from './App'
+import NewsStore from './components/stores/NewsStore'
+import StocksStore from './components/stores/StocksStore'
+import CryptosStore from './components/stores/CryptosStore'
+import ChartState from './components/stores/ChartState'
+
+import './index.css';
+
+render((
+    <Provider ChartState={ChartState} CryptosStore={CryptosStore} StocksStore={StocksStore} NewsStore={NewsStore}>
+        <App />
+    </Provider>
+), document.getElementById('root'));

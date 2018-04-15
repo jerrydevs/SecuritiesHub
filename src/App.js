@@ -1,21 +1,46 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import { inject, observer } from 'mobx-react'
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
-  }
+import NavBar from './components/NavBar.js'
+import Main from './components/Main.js'
+
+export default class App extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            currentPage: "Home", //"Home", "Search", "Stocks", "Cryptos"
+            
+        }
+    }
+
+    handleSwitchHome = () => {
+        this.setState({
+            currentPage: "Home"
+        })
+    }
+    handleSwitchSearch = () => {
+        this.setState({
+            currentPage: "Search"
+        })
+    }
+    handleSwitchStocks = () => {
+        this.setState({
+            currentPage: "Stocks"
+        })
+    }
+    handleSwitchCryptos = () => {
+        this.setState({
+            currentPage: "Cryptos"
+        })
+    }
+
+    render() {
+        return(
+            <div className="index">
+                <NavBar switchHome={this.handleSwitchHome} switchSearch={this.handleSwitchSearch}
+                switchStocks={this.handleSwitchStocks} switchCryptos={this.handleSwitchCryptos}/>
+                <Main currentPage={this.state.currentPage}/>
+            </div>
+        )
+    }
 }
-
-export default App;

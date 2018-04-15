@@ -1,0 +1,11 @@
+nav {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    background-color: #999;
+    top: 0;
+    width: 85px;
+    height: 100vh;
+  }
+
+  
