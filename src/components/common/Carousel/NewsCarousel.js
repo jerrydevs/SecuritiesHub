@@ -1,17 +1,16 @@
 import React, { Component } from 'react'
 import Siema from 'siema'
+import { inject, observer } from 'mobx-react'
 
-import NewsCard from './NewsCard'
+import NewsCard from '../Card/NewsCard'
+import Button from '../ButtonPlain/ButtonPlain'
 
+import './NewsCarousel.css'
 
-import './styles/NewsCarousel.css'
-
+@inject('NewsStore') @observer
 export default class NewsCarousel extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            news: this.props.news
-        }
+    state = {
+        news: this.props.NewsStore.news
     }
 
     componentDidMount() {
@@ -32,8 +31,8 @@ export default class NewsCarousel extends Component {
                 <div className="siema">
                     {this.state.news.map((item) => <NewsCard key={item.title} {...item} />)}
                 </div>
-                <button className="btn btn-sm" onClick={this.prev}>Prev</button>
-                <button className="btn btn-sm" onClick={this.next}>Next</button>
+                <Button click={this.prev} name="Prev"></Button>
+                <Button click={this.next} name="Next"></Button>
             </div>
         )
     }

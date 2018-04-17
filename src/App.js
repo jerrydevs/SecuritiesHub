@@ -1,16 +1,11 @@
 import React, { Component } from 'react'
-import { inject, observer } from 'mobx-react'
 
-import NavBar from './components/NavBar.js'
+import NavBar from './components/Home/NavBar/NavBar'
 import Main from './components/Main.js'
 
 export default class App extends Component{
-    constructor(props) {
-        super(props);
-        this.state = {
-            currentPage: "Home", //"Home", "Search", "Stocks", "Cryptos"
-            
-        }
+    state = {
+        currentPage: "Home", //"Home", "Search", "Stocks", "Cryptos"
     }
 
     handleSwitchHome = () => {

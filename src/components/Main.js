@@ -1,21 +1,14 @@
 import React, { Component } from 'react'
 
-import Home from './Home'
-import Search from './Search'
-import Stocks from './Stocks'
-import Cryptos from './Cryptos'
+import Home from './Home/Home'
+import Search from './Search/Search'
+import Stocks from './Stocks/Stocks'
+import Cryptos from './Cryptos/Cryptos'
 
-import './styles/Main.css'
+import './Main.css'
 
 
 export default class Main extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    async componentDidMount() {
-
-    }
 
     pageSwitch() {
         const currentPage = this.props.currentPage;

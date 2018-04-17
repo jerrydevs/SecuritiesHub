@@ -1,4 +1,4 @@
-.btn {
+.ButtonPlain {
     border: none;
     color: white;
     background-color: #999;
@@ -7,6 +7,6 @@
     width: 97px;
 }
 
-.btn:hover {
+.ButtonPlain:hover {
     background-color: #444;
 }

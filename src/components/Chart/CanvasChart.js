@@ -1,13 +1,9 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Line, Scatter } from 'react-chartjs-2'
+import { Line } from 'react-chartjs-2'
 
 @inject('ChartState') @observer
 export default class CanvasChart extends Component {
-    constructor(props) {
-        super(props)
-    }
-
     render() {
         let chartData = {
             datasets: [{
