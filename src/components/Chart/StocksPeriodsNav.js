@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Button } from 'semantic-ui-react'
 
 import PeriodsNavButton from './PeriodsNavButton'
 
@@ -38,17 +39,13 @@ const periodOptions = [
 ]
 
 export default class StocksPeriodsNav extends Component {
-    constructor(props) {
-        super(props)
-    }
-
     render() {
         return (
-            <div className="btn-group">
+            <Button.Group>
                 {periodOptions.map((option) => {
                     return <PeriodsNavButton key={option.period} period={option.period} interval={option.xInterval} />
                 })}
-            </div>
+            </Button.Group>
         )
     }
 }

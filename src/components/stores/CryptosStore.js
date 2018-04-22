@@ -1,8 +1,6 @@
-import React, { Component } from 'react'
 import { observable, action, runInAction, computed } from 'mobx'
 
 const coinMktEndpt = "https://api.coinmarketcap.com/v1/ticker/?limit=0";
-const cryptoCompEndpt = "https://min-api.cryptocompare.com/data";
 
 class CryptosStore {
 
@@ -51,10 +49,10 @@ class CryptosStore {
         let cryptoItems = cryptoData.reduce((total, item) => {
             if (item.market_cap_usd != null & item.available_supply != null & item["24h_volume_usd"] != null){
                 total.push({
-                symbol: item.symbol, 
-                name: item.name, 
-                price: item.price_usd,
                 rank: item.rank,
+                name: item.name, 
+                symbol: item.symbol, 
+                price: item.price_usd,               
                 marketCap: item.market_cap_usd, 
                 deltaPerc1H: item.percent_change_1h,
                 deltaPerc1D: item.percent_change_24h,

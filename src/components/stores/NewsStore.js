@@ -1,8 +1,6 @@
-import React, { Component } from 'react'
 import { observable, action, runInAction } from 'mobx'
 
 const newsAPIEndpt = "https://newsapi.org/v2/top-headlines";
-const bloombergSrc = "bloomberg";
 const newsAPIKey = "6e6ef18dfb95410c88e539cdabdb301d";
 
 class NewsStore {
@@ -12,7 +10,7 @@ class NewsStore {
      
     @action
     async loadNews() {
-        const response = await fetch("https://newsapi.org/v2/top-headlines?sources=bloomberg&apiKey=6e6ef18dfb95410c88e539cdabdb301d");
+        const response = await fetch(`${newsAPIEndpt}?sources=bloomberg&apiKey=${newsAPIKey}`);
         const json = await response.json();
         runInAction(() => {
             this.news = json.articles.reduce((total, item) => {

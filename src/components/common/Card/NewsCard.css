@@ -1,0 +1,10 @@
+.newsCard {
+    height: 60vh;
+    width: 100%;
+}
+
+.cardImage {
+    height: 350px;
+    width: 100%;
+    overflow: hidden;
+}

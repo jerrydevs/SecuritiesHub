@@ -1,4 +1,3 @@
-import React, { Component } from 'react'
 import { observable, action, runInAction, computed } from 'mobx'
 
 const iexEndpt = "https://api.iextrading.com/1.0";
@@ -91,13 +90,14 @@ class StocksStore {
       
           if (itemIndex !== -1) {
             consolidated.push({
-                symbol: openItems[itemIndex].symbol,
                 name: openItems[itemIndex].name,
+                symbol: openItems[itemIndex].symbol,
                 current: currentItems[i].current,
                 open: openItems[itemIndex].open,
+                volume: openItems[itemIndex].volume,
                 delta: currentItems[i].current - openItems[itemIndex].open,
                 deltaPerc: 100*(currentItems[i].current - openItems[itemIndex].open)/openItems[itemIndex].open,
-                volume: openItems[itemIndex].volume
+                
             })
           }
         }

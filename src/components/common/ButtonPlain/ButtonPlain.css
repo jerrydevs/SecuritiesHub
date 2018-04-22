@@ -1,0 +1,12 @@
+.ButtonPlain {
+    border: none;
+    color: white;
+    background-color: #999;
+    cursor: pointer;
+    padding: 20px;
+    width: 97px;
+}
+
+.ButtonPlain:hover {
+    background-color: #444;
+}

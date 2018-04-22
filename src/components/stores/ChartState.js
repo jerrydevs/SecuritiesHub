@@ -1,19 +1,10 @@
-import React, { Component } from 'react'
 import { observable, action, runInAction } from 'mobx'
 
 import StocksStore from './StocksStore'
 import CryptosStore from './CryptosStore'
 
 const iexEndpt = "https://api.iextrading.com/1.0";
-const iexMarket = "/stock/market/batch?symbols="
-const iexMktLast = "https://api.iextrading.com/1.0/tops/last";
-const coinMktEndpt = "https://api.coinmarketcap.com/v1/ticker/?limit=0";
 const cryptoCompEndpt = "https://min-api.cryptocompare.com/data";
-const newsAPIEndpt = "https://newsapi.org/v2/top-headlines";
-
-const stockDefaultTime = "1Y";
-const cryptoDefaultTime = "1D";
-
 
 class ChartState {
 
@@ -44,7 +35,7 @@ class ChartState {
             let data = await fetch(`${iexEndpt}/stock/${this.search}/chart/1d`);
             data = await data.json();
             data = data.reduce((total, item) => {
-                if (item.marketAverage !== 0) {
+                if (item.marketAverage !== 0 && item.marketAverage !== -1) {
                     const year = item.date.substring(0, 4);
                     const month = item.date.substring(4, 6);
                     const date = item.date.substring(6, 8);
@@ -64,12 +55,13 @@ class ChartState {
         } else {
             let data = await fetch(`${iexEndpt}/stock/${this.search}/chart/${this.period}`);
             data = await data.json();
-        
             data = data.reduce((total, item) => {
-            total.push({
-                x: new Date(item.date),
-                y: item.close
-            });
+                if (item.marketAverage !== 0 && item.marketAverage !== -1) {
+                    total.push({
+                        x: new Date(item.date),
+                        y: item.close
+                    })
+                }
             return total;
             }, []);
             runInAction(() => {
@@ -81,7 +73,6 @@ class ChartState {
 
     @action
     async getCryptoChartData() {
-        let timeframe = String(this.period);
         let cryptoData;
         if (this.period === "1D") {
             cryptoData = await fetch(`${cryptoCompEndpt}/histominute?fsym=${this.search}&tsym=USD&limit=1440&e=CCCAGG`);
@@ -116,18 +107,16 @@ class ChartState {
     @action
     async executeSearch(input) {
         this.handleSearchChange(input)
+        input = this.search
         const stockQuery = StocksStore.symbols.find((item) => item === input)
         if (stockQuery !== undefined) {
             this.getStockChartData();
         } else {
-            const cryptoQuery = CryptosStore.symbols.find((item) => item.symbol === input)
+            const cryptoQuery = CryptosStore.symbols.find((item) => item === input)
             if (cryptoQuery !== undefined) {
                 this.getCryptoChartData();
             } else {
-                console.log("damn")
-                console.log(cryptoQuery)
-                console.log(CryptosStore.symbols)
-                console.log(this.search)
+                this.type = "None"
             }
         }
         
