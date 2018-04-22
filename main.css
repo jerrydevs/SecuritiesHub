@@ -1,0 +1,123 @@
+* {
+  box-sizing: border-box;
+}
+
+#container {
+  color: #4A4A4A; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+  nav {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+  }
+
+    nav a {
+      margin-left: 20px;
+    }
+
+  header {
+    display: flex;
+    height: 100vh;
+    padding-top: 20vh;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+    #highlights {
+      padding-bottom: 10vh;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+    }
+
+      #topPerforming {
+        width: 50%;
+      }
+
+      #bottomPerforming {
+        width: 50%;
+      }
+
+      .stockItem {
+
+      }
+
+        .companyName {
+          margin-bottom: 0;
+        }
+
+        .stockInfo {
+          display: flex;
+          justify-content: space-evenly;
+        }
+
+          .stockTicker, .dollarChange, .percentChange {
+            display: inline;
+          }
+        
+        
+
+    .btn {
+      border: none;
+      color: white;
+      background-color: #999;
+      cursor: pointer;
+      padding: 20px;
+
+    }
+
+    .btn:hover {
+      background-color: #444;
+    }
+
+    #criteriaBtns {
+      display: flex;
+      justify-content: center;
+    }
+
+    
+@media only screen and (max-width: 480px) {
+
+  body {
+    font-size: 20px;
+  }
+
+  p {
+    font-size: 16px;
+  }
+
+  main {
+
+  }
+
+    #highlights {
+      flex-direction: column;
+    }
+
+      #topPerforming {
+        width: 100%;
+      }
+
+      #bottomPerforming {
+        width: 100%;
+      }
+
+      .stockItem {
+  
+      }
+
+  .btn {
+    padding: 20px;
+  }
+}
